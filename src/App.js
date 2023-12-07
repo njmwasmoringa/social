@@ -1,23 +1,41 @@
 import logo from './logo.svg';
 import './App.css';
 
+import data from "./data.json";
+import Tweets from './tweets';
+import { useEffect, useState } from 'react';
+import TweetsStats from './tweet-stats';
+
 function App() {
+
+  let [tweets, setTweets] = useState(data.tweets);
+  const numberOfLikes = tweets.reduce((total, tweet)=>total += tweet.likes, 0);
+
+  function handleLike(id, newLikes){
+
+    setTweets( (prevTweets)=>{
+      const ts = [...prevTweets];
+      const indexOfTweet = ts.findIndex(t=>t.id === id);
+      ts[indexOfTweet].likes = newLikes;
+      return ts;
+    } );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div >
+      <header>
+        <h3>Social</h3>
       </header>
+
+
+      <main>
+
+        <Tweets tweets={tweets} onLike={handleLike} />
+
+        <TweetsStats {...{numberOfLikes}}   />
+
+      </main>
+
     </div>
   );
 }
